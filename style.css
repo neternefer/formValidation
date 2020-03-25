@@ -1,0 +1,46 @@
+body{
+    font-family: "Helvetica", sans-serif;
+    margin: 0 auto;
+    width: 90%;
+    /* display: flex; */
+}
+label{
+    font-weight: bold;
+    margin: 0.5em 0;
+    /* margin-right: calc(); */
+}
+input{
+    margin: 1em 0;
+    width: 90vw;
+    height: 2.5em;
+    margin-right: 1em;
+}
+[type="checkbox"],
+[type="radio"]{
+    width: auto;
+    height: auto;
+    padding: 0 1em;
+}
+.radios{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.description{
+    font-weight: normal;
+    font-size: 0.8em;
+    color: lightslategray;
+    margin-left: 1.5em;
+}
+.supports-date .description,
+.supports-time .description,
+.supports-month .description{
+    display: none;
+}
+.error{
+    border-color: red;
+}
+.error-message{
+    color: red;
+    font-style: italic;
+}
