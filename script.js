@@ -121,8 +121,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     //Check all fields on submit
     document.addEventListener('submit', function(event){
-        if(!event.target.form.classList.contains('validate')) return;
-        
+        if(!event.target.classList.contains('validate')) return;
+        let fields = event.target.elements;
+        let error, containsError;
+        for(var i=0;i<fields.length;i++){
+            error = hasErrors(fields[i]);
+            if(error){
+                console.log(error);
+                showErrors(fields[i], error);
+                //store the first invalid field
+                if(!containsError){
+                    containsError = fields[i];
+                }   
+            }
+        }
+        //prevent submit if there are errors
+        if(containsError){
+            event.preventDefault();
+            //focus on first invalid field
+            containsError.focus()
+        }
+        //otherwise, let the form submit   
        
     }, false);
 
@@ -143,7 +162,78 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     };  
-
+    let properties = ['badInput', 'patternMismatch', 'stepMismatch', 
+        'typeMismatch', 'valueMissing','rangeOverflow', 'rangeUnderflow', 
+        'tooLong', 'tooShort', 'valid'];
+    //Check if the browser supports ValidityState
+    //and if so, which VS properties
+    const supported = function(){
+        let input = document.createElement('input');
+        if('validity' in input){
+            for (var i=0;i<properties.length;i++){
+                if (!properties[i] in input.validity){
+                    return;
+                }
+            return true;
+            }
+        return;
+        }
+    };
+    const getValidityState = function(field){
+        let type = field.getAttribute('type') || field.nodeName.toLowerCase();//?
+        let isNum = type === 'number' || type === 'range';
+        let length = field.value.length;
+        if(field.type === 'radio' && field.name){
+            let group = document.getElementsByName(field.name);
+            if(group.length > 0){
+                for(var i=0;i<group.length;i++){
+                    //get selected field
+                    if(group[i].form === field.form && field.checked){
+                        field = group[i];
+                        break;
+                    }
+                }
+            }
+        }
+        const checkValidity = {};
+        for (var i=0;i<properties.length;i++){
+            if(properties[i] !== 'valid'){
+                checkValidity[properties[i]] = false;
+            }    
+        };
+        let valid = true;
+        for(var key in checkValidity){
+            if(checkValidity.hasOwnProperty(key)){
+                if(checkValidity[key]){
+                    valid = false;
+                    break;
+                }
+            }
+        }
+        checkValidity.valid = valid;
+        return checkValidity;
+    }
+    //Tests
+    badInput:(isNum && length > 0 && !/[-+]?[0-9]/.test(field.value));
+    patternMismatch:(field.hasAttribute('pattern') && length > 0 && new Regex(
+        field.getAttribute('pattern')).test(field.value));
+    rangeOverflow:(field.hasAttribute('max') && isNum && field.value > 1 && parseInt(
+        field.value, 10) > parseInt(field.getAttribute('max'), 10));
+    rangeUnderflow:(field.hasAttribute('min') && isNum && field.value > 1 && parseInt(
+        field.value, 10) < parseInt(field.getAttribute('min'), 10));
+    stepMismatch:(field.hasAttribute('step') && isNum && field.getAttribute('step') !== 'any'&&
+        Number(field.value) % parseFloat(field.getAttribute('step')) !== 0);
+    tooLong:(field.hasAttribute('maxlength') && field.getAttribute('maxlength') > 0 &&
+        length > parseInt(field.getAttribute('maxlength'), 10));
+    tooShort:(field.hasAttribute('minlength') && field.getAttribute('minlength') > 0 &&
+        length > 0 && length < parseInt(field.getAttribute('minlength'), 10));
+    typeMismatch:(length > 0 && ((type === 'email' && 
+        !/^\S+@\S+\.\S+$/.test(field.value)) || 
+        (type === 'url' && 
+        !/^(?:(?:https?|HTTPS?|ftp|FTP):\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-zA-Z\u00a1-\uffff0-9]-*)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.(?:[a-zA-Z\u00a1-\uffff0-9]-*)*[a-zA-Z\u00a1-\uffff0-9]+)*)(?::\d{2,5})?(?:[\/?#]\S*)?$/.test(field.value))));
+    valueMissing:(field.hasAttribute('required') && (((type === 'radio' || type === 'checkbox') &&
+    !field.checked) || (type === 'select' && field.options[field.selectedIndex].value < 1) 
+    || (type !== 'checkbox' && type !== 'radio' && type !== 'select' && length < 1)));
     checkSupport();
 });
 
