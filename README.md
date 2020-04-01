@@ -2,10 +2,9 @@
 JS Form validation - native, Constraint API, polyfill
 
 TODO:
-- finish/rewrite polyfill script
-- rewamp code to adhere to DRY
-- email verification - basic Regex or retyping
-- add phone verification - country codes and input masks 
-- accessibility
-- better error message display + bulk messages
-- full IE9 support
+1. Finish date/type validation
+2. Email verification - basic Regex or retyping
+3. Add phone verification - country codes and input masks 
+4. Accessibility
+5. Better error message display + bulk messages
+
