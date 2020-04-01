@@ -6,56 +6,65 @@
     //   - for datetime-locale /timezone in hidden possible/
 
 document.addEventListener("DOMContentLoaded", () => {   
-    const fallbackElements = document.getElementsByClassName('fallback');
-    const fallbackLabelElements = document.getElementsByClassName('fallbackLabel');
-    const fallbacks = [...fallbackElements, ...fallbackLabelElements];
     const nativeElements = document.getElementsByClassName('native');
-    for(const f of fallbacks){
-        f.style.display= 'none';
-    };
+    let min = document.getElementById('time').getAttribute('min');
+    let max = document.getElementById('time').getAttribute('max');
+    let idCounter = 0;
     //Helper functions
-    const selectPopulate = (min, max, selectElement) => {
+    const selectPopulate = (min, max) => {
+        let fragment = new DocumentFragment();
         for(var i = min;i <= max;i++){
             let option = document.createElement('option');
             option.textContent = (i < 10) ? '0' + i : i;
-            selectElement.appendChild(option);
+            fragment.appendChild(option);
         }
+        return fragment;
     };
-    const weekPopulate = () => {
-        selectPopulate(1, 52, fallbackWeek);
-        yearPopulate();
-    };
-    const yearPopulate = () => {
+    const week = () => {selectPopulate(1, 52);};
+    const year = () => {
         let date = new Date();
         let year = date.getFullYear();
-        selectPopulate(year, year + 10, fallbackYear);
+        selectPopulate(year, year + 10);
     };
-    const dayPopulate = (month, year) => {
-        //could try extracting min/max days if supported
-        //add code to calculate days according to months/leap years
-        //populate days
-    };
-    const datePopulate = (min, max) => {
-        dayPopulate(min, max);
-        yearPopulate();
-    };
-    const datetimePopulate = () => {
+    const day = (month, year) => {
+        if(month in ["April", "June", "September", "November"]){
+            selectPopulate(1, 30);
+        }
+        if(month === 'February'){
+            let dayNum = 0;
+            const isLeap = new Date(year, 1, 29).getMonth() === 1;
+            dayNum = isLeap ? 29 : 28;
+            selectPopulate(1, dayNum);
 
+        }else{
+            selectPopulate(1, 31);
+        }
     };
-    const monthPopulate = () => {
-        yearPopulate();
+    const hour = () => {
+        selectPopulate(min.slice(0, min.indexOf(':')), max.slice(0, max.indexOf(':')));
     };
-    const timePopulate = () => {
-        //add check if min/max supported here
-        //set default values if it's not
-        let min = document.getElementById('time').getAttribute('min');
-        let max = document.getElementById('time').getAttribute('max');
-        selectPopulate(min, max, fallbackHour);
-        selectPopulate(0, 59, fallbackMinute);
+    const minute = () => {
+        selectPopulate(min.slice(min.indexOf(':') + 1), max.slice(max.indexOf(':') + 1));
+    };
+    const month = () => {
+        const monthNames = ["January", "February", "March", "April",
+            "May", "June", "July", "August", "September", "October", 
+            "November", "December"];
+        let fragment = new DocumentFragment();
+        for(var i = 0;i <= monthNames.length;i++){
+            let option = document.createElement('option');
+            option.textContent = monthNames[i];
+            fragment.appendChild(option);
+        }
+        return fragment;
     };
     const typeHandlers = {
-        'date': datePopulate, 'time': timePopulate,'month': monthPopulate,'week': weekPopulate,
-        'datetime-local': datetimePopulate
+        'date': [day, year], 
+        'time': [hour, minute],
+        'month': [year],
+        'week': [week, year],
+        'datetime-local': [day, month, year,
+            hour, minute]
     };
     //Check support for semantic date/time types
     const checkSemanticSupport = (type) => {
@@ -80,16 +89,36 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     //Show fallback elements if type not supported
     const setFallback = (type) => {
-        if(!checkSemanticSupport(type)){
+        if(checkSemanticSupport(type)){
+            const parentDiv = document.getElementsByClassName(`${type}s`);
+            parentDiv.appendChild(document.createElement('p').setAttribute('class', 'fallbackLabel'));
+            parentDiv.appendChild(document.createElement('div').setAttribute('class', 'fallback'));
             const functionName = typeHandlers[type];
-            functionName();
-            for(const f of fallbacks){
-                f.style.display= 'block';
-            };
+            for(const f in functionName){
+                let currentFallback = createFallbackElement();
+                if(f === day){
+                    yearArg = parentDiv.querySelector('[name=year]').value;
+                    monthArg = parentDiv.querySelector('[name=month]').value;
+                    currentFallback.appendChild(f(monthArg, yearArg));
+                }
+                currentFallback.appendChild(f());
+            }
             for(const n of nativeElements){
                 n.style.display= 'none';
             };
         }   
-    };
+    }; 
+    const createFallbackElement = () => {
+        let fallbackId = `fallback${type.toLowerCase()}`;
+        if(document.getElementById(fallbackId) !== null){
+            fallbackId += idCounter;
+            idCounter += 1;
+        }
+        const parentElement = document.querySelector(`.${type}s div.fallback`);
+        parentElement.innerHTML =
+            `<span><label for=${fallbackId}>${f.toUpperCase()}:</label>
+            <select id=${fallbackId} name=${f}></select></span>`;
+        return document.getElementById(`${fallbackId}`);
+    }
     checkTypesPresent();
 }); 

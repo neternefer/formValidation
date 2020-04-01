@@ -10,52 +10,85 @@
 <body>
     <form class="validate">
         <!-- <div class="dates">
-            <label for="date1">
-                Arriving
-                <span class="description">
-                    Please enter date in YYYY-MM-DD format
-                </span>
-            </label>
-            <input type="date" id="date1" name="date1" pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]
-            |1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))" required>
-        </div>-->
-        <div class="times">
             <div class="native">
-                <label for="time">Choose your time: (between 03:00 and 23:00)</label>
-                <input type="time" id="time" name="time" min="03:00" max="23:00" required>
+                <label for="date">Choose your date:</label>
+                <input type="date" id="date" name="date" pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]
+                |1[0-9]|2[0-9])|(?:(?!02)(?:0[1-9]|1[0-2])-(?:30))|(?:(?:0[13578]|1[02])-31))" 
+                title="Choose date in YYYY-MM-DD format" 
+                min="2020-01-01" max="2030-12-31" required>
             </div>
-            <p class="fallbackLabel">Choose your time: (between 03:00 and 23:00)</p>
+            <p class="fallbackLabel"> Choose your date:</p>
             <div class="fallback">
                 <div>
                     <span>
-                        <label for="hour">Hour:</label>
-                        <select id="fallbackHour" name="hour"></select>
+                        <label for="fallbackYear">Year:</label>
+                        <select id="fallbackYear" name="year"></select>
                     </span>
                     <span>
-                        <label for="minute">Minutes:</label>
-                        <select id="fallbackMinute" name="minute"></select>
+                        <label for="fallbackMonth"></label>
+                        <select id="fallbackMonth">
+                            <option>January</option>
+                            <option>February</option>
+                            <option>March</option>
+                            <option>April</option>
+                            <option>May</option>
+                            <option>June</option>
+                            <option>July</option>
+                            <option>August</option>
+                            <option>September</option>
+                            <option>October</option>
+                            <option>November</option>
+                            <option>December</option>
+                        </select>
+                    </span>
+                    <span>
+                        <label for="fallbackDay"></label>
+                        <select id="fallbackDay"></select>
                     </span>
                 </div>
             </div>
+        </div> -->
+        <div class="times">
+            <div class="native">
+                <label for="time">Choose your time:</label>
+                <input type="time" id="time" name="time" min="03:00" max="23:00" 
+                pattern="(0[3-9]|1[0-9]|2[0-2])(:[0-5][0-9])" 
+                title="Choose time between 03:00 and 23:00" required>
+            </div>
+            <!-- <p class="fallbackLabel">Choose your time:</p>
+            <div class="fallback">
+                <div>
+                    <span>
+                        <label for="fallbackHour">Hour:</label>
+                        <select id="fallbackHour" name="hour"></select>
+                    </span>
+                    <span>
+                        <label for="fallbackMinute">Minutes:</label>
+                        <select id="fallbackMinute" name="minute"></select>
+                    </span>
+                </div>
+            </div> -->
         </div>
         <div class="weeks">
             <div class="native">
                 <label for="nativeWeek">Choose your week:</label>
-                <input type="week" id="week" name="week" min="2020-W01" max="2022-W52">
+                <input type="week" id="week" name="week" min="2020-W01" max="2030-W52"
+                pattern="202[0-9]|2030-W[0[1-9]|[2-4][0-9]|5[0-2]]" 
+                title="Enter your week in YYYY-Www format (e.g. 2020-W23)" required>
             </div>  
-            <p class="fallbackLabel">Choose your week:</p>
+            <!-- <p class="fallbackLabel">Choose your week:</p>
             <div class="fallback">
                 <div>
                     <span>
-                        <label for="year">Year:</label>
+                        <label for="fallbackY">Year:</label>
                         <select id="fallbackYear" name="year"></select>
                     </span>
                     <span>
-                        <label for="week">Week:</label>
+                        <label for="fallbackWeek">Week:</label>
                         <select id="fallbackWeek" name="week"></select>
                     </span>
                 </div>
-            </div>
+            </div> -->
         </div>
         <!-- <div class="datetimes">
             <label for="datetime-locale">Choose your date:</label>
