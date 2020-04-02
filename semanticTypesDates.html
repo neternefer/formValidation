@@ -17,7 +17,7 @@
 </head>
 <body>
     <form class="validate">
-        <!-- <div class="dates">
+        <div class="dates">
             <div class="native">
                 <label for="date">Choose your date:</label>
                 <input type="date" id="date" name="date" pattern="(?:19|20)[0-9]{2}-(?:(?:0[1-9]|1[0-2])-(?:0[1-9]
@@ -25,37 +25,6 @@
                 title="Choose date in YYYY-MM-DD format" 
                 min="2020-01-01" max="2030-12-31" required>
             </div>
-            <p class="fallbackLabel"> Choose your date:</p>
-            <div class="fallback">
-                <div>
-                    <span>
-                        <label for="fallbackYear">Year:</label>
-                        <select id="fallbackYear" name="year"></select>
-                    </span>
-                    <span>
-                        <label for="fallbackMonth"></label>
-                        <select id="fallbackMonth">
-                            <option>January</option>
-                            <option>February</option>
-                            <option>March</option>
-                            <option>April</option>
-                            <option>May</option>
-                            <option>June</option>
-                            <option>July</option>
-                            <option>August</option>
-                            <option>September</option>
-                            <option>October</option>
-                            <option>November</option>
-                            <option>December</option>
-                        </select>
-                    </span>
-                    <span>
-                        <label for="fallbackDay"></label>
-                        <select id="fallbackDay"></select>
-                    </span>
-                </div>
-            </div>
-        </div> -->
         <div class="times">
             <div class="native">
                 <label for="time">Choose your time:</label>
@@ -72,11 +41,11 @@
                 title="Enter your week in YYYY-Www format (e.g. 2020-W23)" required>
             </div>  
         </div>
-        <!-- <div class="datetimes">
+        <div class="datetimes">
             <label for="datetime-locale">Choose your date:</label>
             <input type="datetime-locale" id="datetime" name="datetime" min="2020-W01" max="2022-W52" 
             pattern="^202([0-2])-W(0[1-9]|[1-4][0-9]||5[0-2])">
-        </div>  -->
+        </div>
     </form>
 </body>
 </html>
