@@ -7,4 +7,5 @@ TODO:
 3. Add phone verification - country codes and input masks 
 4. Accessibility
 5. Better error message display + bulk messages
+6. Refactor code + browser support
 
