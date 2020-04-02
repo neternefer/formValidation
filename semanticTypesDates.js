@@ -13,18 +13,20 @@ document.addEventListener("DOMContentLoaded", () => {
     //Helper functions
     const selectPopulate = (min, max) => {
         let fragment = new DocumentFragment();
-        for(var i = min;i <= max;i++){
-            let option = document.createElement('option');
+        for(var i = parseInt(min);i <= parseInt(max);i++){
+            let option = document.createElement('option'); 
             option.textContent = (i < 10) ? '0' + i : i;
             fragment.appendChild(option);
+           
         }
         return fragment;
     };
-    const week = () => {selectPopulate(1, 52);};
+    const week = () => {return selectPopulate(1, 52);};
     const year = () => {
         let date = new Date();
         let year = date.getFullYear();
-        selectPopulate(year, year + 10);
+        console.log(year)
+        return selectPopulate(year, year + 10);
     };
     const day = (month, year) => {
         if(month in ["April", "June", "September", "November"]){
@@ -41,10 +43,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
     const hour = () => {
-        selectPopulate(min.slice(0, min.indexOf(':')), max.slice(0, max.indexOf(':')));
+        let min = document.querySelector('#time').getAttribute('min');
+        let max = document.querySelector('#time').getAttribute('max');
+        return selectPopulate(min.slice(0, min.indexOf(':')), max.slice(0, max.indexOf(':')));
     };
+    
     const minute = () => {
-        selectPopulate(min.slice(min.indexOf(':') + 1), max.slice(max.indexOf(':') + 1));
+        let min = document.querySelector('#time').getAttribute('min');
+        let max = document.querySelector('#time').getAttribute('max');
+        return selectPopulate(min.slice(min.indexOf(':') + 1), max.slice(max.indexOf(':') + 1));
     };
     const month = () => {
         const monthNames = ["January", "February", "March", "April",
@@ -61,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const typeHandlers = {
         'date': [day, year], 
         'time': [hour, minute],
-        'month': [year],
+        'month': [month, year],
         'week': [week, year],
         'datetime-local': [day, month, year,
             hour, minute]
@@ -83,6 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if(document.getElementById(type) === null){
                 continue;
             }else{
+                console.log('calling setFallback')
                 setFallback(type);
             }
         }
@@ -90,34 +98,47 @@ document.addEventListener("DOMContentLoaded", () => {
     //Show fallback elements if type not supported
     const setFallback = (type) => {
         if(checkSemanticSupport(type)){
-            const parentDiv = document.getElementsByClassName(`${type}s`);
-            parentDiv.appendChild(document.createElement('p').setAttribute('class', 'fallbackLabel'));
-            parentDiv.appendChild(document.createElement('div').setAttribute('class', 'fallback'));
+            const parentDiv = document.querySelector(`.${type}s`);
+            const p = parentDiv.appendChild(document.createElement('p'));
+            p.setAttribute('class', 'fallbackLabel');
+            const d = parentDiv.appendChild(document.createElement('div'));
+            d.setAttribute('class', 'fallback');
             const functionName = typeHandlers[type];
-            for(const f in functionName){
-                let currentFallback = createFallbackElement();
-                if(f === day){
+            for(var i=0;i<functionName.length;i++){
+                let currentFallback = createFallbackElement(type, functionName[i].name);
+                if(functionName[i].name === day){
                     yearArg = parentDiv.querySelector('[name=year]').value;
                     monthArg = parentDiv.querySelector('[name=month]').value;
-                    currentFallback.appendChild(f(monthArg, yearArg));
+                    currentFallback.appendChild(functionName[i](monthArg, yearArg));
                 }
-                currentFallback.appendChild(f());
+                console.log(functionName[i].name)
+                currentFallback.appendChild(functionName[i]());
             }
             for(const n of nativeElements){
                 n.style.display= 'none';
             };
         }   
     }; 
-    const createFallbackElement = () => {
+    const createFallbackElement = (type, func) => {
         let fallbackId = `fallback${type.toLowerCase()}`;
         if(document.getElementById(fallbackId) !== null){
             fallbackId += idCounter;
             idCounter += 1;
         }
         const parentElement = document.querySelector(`.${type}s div.fallback`);
-        parentElement.innerHTML =
-            `<span><label for=${fallbackId}>${f.toUpperCase()}:</label>
-            <select id=${fallbackId} name=${f}></select></span>`;
+        const span = document.createElement('span');
+        parentElement.insertAdjacentElement('afterbegin', span);
+        const l = document.createElement('label');
+        l.setAttribute('for', `${fallbackId}`);
+        l.innerText = `${func.toUpperCase()}:`;
+        span.insertAdjacentElement('afterbegin', l);
+        const s = document.createElement('select');
+        s.setAttribute('id', `${fallbackId}`);
+        s.setAttribute('name', `${func}`);
+        span.insertAdjacentElement('beforeend', s);
+        // parentElement.innerHTML =
+        //     `<span><label for=${fallbackId}>${func.toUpperCase()}:</label>
+        //     <select id=${fallbackId} name=${func}></select></span>`;
         return document.getElementById(`${fallbackId}`);
     }
     checkTypesPresent();
