@@ -1,0 +1,33 @@
+.template-form {
+    width: 50vh;
+    height: 50vh;
+    margin: 0 auto;
+    border: 2px solid green;
+}
+
+form {
+    position: relative;
+    margin: 0 auto;
+    top: 50%;
+    transform: translateY(-50%);
+    width: fit-content;
+    text-align: center;
+}
+
+label {
+    display: block;
+    padding-bottom: 1rem;
+}
+
+input {
+    margin: 1rem 0;
+    padding: .5rem;
+}
+
+input[type="submit"] {
+    background-color: green;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+}
+
