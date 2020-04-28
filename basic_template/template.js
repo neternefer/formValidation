@@ -8,11 +8,22 @@ checkInput = (input) => {
     if(validity.valid) return;
     if(validity.valueMissing) return 'This field can\'t be empty.';
     if(validity.typeMismatch || validity.patternMismatch){
-        if(field.type === 'email'){
+        if(input.type === 'email'){
             return 'Please check the email is in the format: name@domain.com';
         }
     };
 };
+
+showErrors = (e) => {
+    const errorMsg = document.querySelector(`#error-msg-${e.target.id}`)
+    if(checkInput(e.target)) {
+        errorMsg.innerHTML = checkInput(e.target);
+    } else {
+        errorMsg.innerHTML = '';
+    };
+};
+
+
 
 //Check form - after every form change
 checkForm = (form) => {
@@ -50,7 +61,7 @@ checkAll = () => {
     checkSubmit(validityLst, submitBtn);
 };
 
-    document.querySelector('#email').addEventListener('blur', checkInput);
-    document.querySelector('#submit').addEventListener('click', checkAll);
+document.querySelector('#email').addEventListener('blur', showErrors);
+document.querySelector('#submit').addEventListener('click', checkAll);
 
 
