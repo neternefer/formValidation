@@ -14,6 +14,8 @@ checkInput = (input) => {
     };
 };
 
+//Show/hide errors
+//TODO: change or blur
 showErrors = (e) => {
     const errorMsg = document.querySelector(`#error-msg-${e.target.id}`)
     if(checkInput(e.target)) {
@@ -23,18 +25,15 @@ showErrors = (e) => {
     };
 };
 
-
-
 //Check form - after every form change
-checkForm = (form) => {
-    const inputs = Array.prototype.slice.apply(form.elements);
+checkForm = (e) => {
+    const inputs = Array.prototype.slice.apply(e.target.form.elements);
     const formErrors = inputs.map((i) => {
         if(!i.checkValidity) {
             checkInput(i);
         }
         return i.checkValidity()
     });
-    console.log('formErrors: ', formErrors)
     return formErrors;
 };
 
@@ -63,5 +62,6 @@ checkAll = () => {
 
 document.querySelector('#email').addEventListener('blur', showErrors);
 document.querySelector('#submit').addEventListener('click', checkAll);
+document.querySelector('form').addEventListener('change', checkForm);
 
 
