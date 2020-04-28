@@ -34,7 +34,9 @@ input{
 }
 .supports-date .description,
 .supports-time .description,
-.supports-month .description{
+.supports-month .description,
+.supports-week .description,
+.supports-datetime-locale .description{
     display: none;
 }
 .error{

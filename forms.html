@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Form Validation</title>
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+    <!-- <script src="script.js"></script> -->
+    <script src="script1.js"></script>
 </head>
 <body>
     <section id="forms">
@@ -83,6 +84,14 @@
                 Please enter time in 24h format.
             </span>
             <input type="time" id="time2" name="time2" pattern="(0[0-9]|1[0-9]|2[0-3])(:[0-5][0-9])" required>
+            <label for="week">
+                Week
+                <span class="description">
+                    Please enter week in YYYY-Www format (e.g. 2020-W32).
+                </span>
+            </label>
+            <input type="week" id="week" name="week" min="2020-W01" max="2022-W52" 
+            pattern="^202([0-2])-W(0[1-9]|[1-4][0-9]||5[0-2])">
         </div> 
         <div class="radios">
             <label for="working-true">
