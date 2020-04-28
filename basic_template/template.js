@@ -1,3 +1,15 @@
+/*Validate form with one field of type email
+1. Check field on blur
+2. If there are errors, show error message
+3. Hide error message on blur if field is corrected
+4. Call checkForm on every form change
+5. checkForm returns a list of checkValidity results for its inputs
+6. Call checkSubmit after each checkForm
+7. If all items in checkForm list are true === form has no errors
+8. Add active class to submit, disabled = false, attach event listener
+9. Submit form
+*/
+
 //Set novalidate property of form to true
 document.querySelector('form').noValidate = true;
 
@@ -27,41 +39,31 @@ showErrors = (e) => {
 
 //Check form - after every form change
 checkForm = (e) => {
+    const submitBtn = document.querySelector('#submit');
     const inputs = Array.prototype.slice.apply(e.target.form.elements);
     const formErrors = inputs.map((i) => {
-        if(!i.checkValidity) {
-            checkInput(i);
+        if(!i.disabled || i.type !== 'submit' || i.type !== 'button') {
+            if(!i.checkValidity) {
+                checkInput(i);
+            }
+            return i.checkValidity()
         }
-        return i.checkValidity()
     });
-    return formErrors;
+    checkSubmit(formErrors, submitBtn)
 };
 
 //Check if submit possible
 checkSubmit = (lst, btn) => {
-    console.log('checkSubmit lst arg: ', lst)
     if(lst.every(x => x)) {
         btn.classList.add('active');
         btn.disabled = false;
-        console.log('Submitted!')
+        btn.addEventListener('click', console.log('Submitted!'));
     }
-    console.log('not submitted')
 };
 
-//Show errors
-//Hide errors
-//Main function - scope?
-checkAll = () => {
-    console.log('checkAll')
-    const formToCheck = document.querySelector('form');
-    const submitBtn = document.querySelector('#submit');
-    const validityLst = checkForm(formToCheck);
-    console.log('ValidityLst: ', validityLst)
-    checkSubmit(validityLst, submitBtn);
-};
 
-document.querySelector('#email').addEventListener('blur', showErrors);
-document.querySelector('#submit').addEventListener('click', checkAll);
+document.querySelector('#email').addEventListener('change', showErrors);
+//document.querySelector('#submit').addEventListener('click', console.log('Submitted!'));
 document.querySelector('form').addEventListener('change', checkForm);
 
 
