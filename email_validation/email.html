@@ -9,8 +9,12 @@
 <body>
     <form>
         <div class="email-input">
-            <label for="email">Enter Your Email Address</label>
-            <input id="email" name="email" type="email" pattern="^\S+@\S+\.\S+$" required>
+            <label for="email">
+                Enter Your Email Address
+                <span class="format-text"></span>
+            </label>
+            <input id="email" name="email" class="email minlength maxlength" type="email"
+            pattern="^\S+@\S+\.\S+$" minlength="2" maxlength="9" required>
             <div class="error-msg" id="error-msg-email"></div>
         </div>
         <input id="submit" type="submit" value="Submit">
